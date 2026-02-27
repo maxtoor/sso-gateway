@@ -232,7 +232,7 @@ Per abilitare l'autenticazione federata tramite FreeRADIUS (EAP-MSCHAPv2):
 Il progetto include uno script `deploy.sh` per automatizzare l'installazione in `/opt/sso-gateway`.
 
 1. **Configurazione locale**:
-   Modifica le variabili in `deploy.sh` sul tuo Mac:
+   Modifica le variabili in `deploy.sh`:
    ```bash
    REMOTE_USER="tuo_utente"
    REMOTE_HOST="ip_del_server"
