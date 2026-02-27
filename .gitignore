@@ -1,0 +1,41 @@
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# Flask / runtime
+instance/
+*.pid
+*.sock
+*.log
+*.ctl
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local databases / dumps
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.tar
+*.tar.gz

@@ -1,0 +1,17 @@
+[Unit]
+Description=sso-gateway - SSO Gateway (Gunicorn)
+After=network.target
+
+[Service]
+User=sso-gateway
+Group=www-data
+WorkingDirectory=/opt/sso-gateway
+Environment="PATH=/opt/sso-gateway/.venv/bin"
+ExecStart=/opt/sso-gateway/.venv/bin/gunicorn --workers 3 --bind unix:/run/sso-gateway/gunicorn.sock wsgi:app --access-logfile /var/log/sso-gateway/access.log --error-logfile /var/log/sso-gateway/error.log
+
+# Crea la directory del socket se non esiste
+RuntimeDirectory=sso-gateway
+RuntimeDirectoryMode=0770
+
+[Install]
+WantedBy=multi-user.target

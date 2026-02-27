@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef2f6;
+      --panel: #ffffff;
+      --text: #203040;
+      --muted: #5f7388;
+      --primary: #005ea8;
+      --primary-hover: #004d88;
+      --border: #d3dde8;
+      --danger: #b00020;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Source Sans 3", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 550px at 50% -180px, #d5e3f2 0%, transparent 70%),
+        var(--bg);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .login-wrap { width: 100%; max-width: 520px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 14px 36px rgba(23, 42, 69, 0.12);
+      padding: 28px 26px 24px;
+      min-height: 540px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 27px;
+      line-height: 1.1;
+      text-align: center;
+    }
+    .signin-logo {
+      width: min(100%, 240px);
+      height: auto;
+      display: block;
+      margin: 0 auto 8px;
+    }
+    .sub {
+      margin: 0 0 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 6px;
+    }
+    .label-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 6px;
+    }
+    .label-row label {
+      margin: 0;
+    }
+    .info-tip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid #86a6c6;
+      color: #1f4f7a;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: help;
+      background: #f3f8fd;
+    }
+    .info-tip::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%);
+      background: #0f2133;
+      color: #ffffff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      min-width: 260px;
+      max-width: 340px;
+      width: max-content;
+      white-space: normal;
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 600;
+      letter-spacing: 0.1px;
+      box-shadow: 0 10px 24px rgba(8, 20, 32, 0.35);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .14s ease;
+      z-index: 30;
+    }
+    .info-tip:hover::after,
+    .info-tip:focus::after {
+      opacity: 1;
+      visibility: visible;
+    }
+    .suggest-wrap { position: relative; }
+    input, button { width: 100%; }
+    input {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 11px 12px;
+      margin-bottom: 12px;
+      font: inherit;
+      background: #fff;
+    }
+    input:focus {
+      outline: none;
+      border-color: #6ea3cf;
+      box-shadow: 0 0 0 3px rgba(0, 94, 168, 0.18);
+    }
+    button {
+      margin-top: 4px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--primary);
+      color: #fff;
+      padding: 11px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .18s ease;
+    }
+    button:hover { background: var(--primary-hover); }
+    .foot {
+      margin: 18px 0 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .foot a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .foot a:hover { text-decoration: underline; }
+    .flash-overlay {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      width: min(92vw, 560px);
+      pointer-events: none;
+    }
+    .flash-item {
+      background: #9d1128;
+      color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 10px 24px rgba(16, 21, 28, 0.28);
+      padding: 10px 38px 10px 12px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 600;
+      transition: opacity .18s ease;
+      position: relative;
+      pointer-events: auto;
+    }
+    .flash-close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 4px;
+      width: auto;
+      margin: 0;
+    }
+    .suggest-list {
+      position: absolute;
+      top: calc(100% - 10px);
+      left: 0;
+      right: 0;
+      z-index: 20;
+      list-style: none;
+      margin: 0;
+      padding: 6px 0;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(23, 42, 69, 0.12);
+      max-height: 210px;
+      overflow: auto;
+      display: none;
+    }
+    .suggest-list.show { display: block; }
+    .suggest-list li {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .suggest-list li:hover,
+    .suggest-list li.active {
+      background: #eef5fc;
+    }
+    .site-footer {
+      margin-top: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .site-footer a {
+      color: var(--primary);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .meta-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 33, 51, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1200;
+      padding: 16px;
+    }
+    .meta-modal.show { display: flex; }
+    .meta-modal-box {
+      width: min(100%, 460px);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 14px 36px rgba(23, 42, 69, 0.22);
+      position: relative;
+    }
+    .meta-modal-box h3 {
+      margin: 0 0 8px;
+      color: #21425f;
+      font-size: 19px;
+    }
+    .meta-modal-box p {
+      margin: 0 0 6px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .meta-close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      border: 0;
+      background: transparent;
+      color: #21425f;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 4px;
+      width: auto;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-overlay">
+        {% for msg in messages %}
+          <div class="flash-item">{{ msg }}<button class="flash-close" type="button" aria-label="Chiudi">&times;</button></div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="login-wrap">
+    <div class="card">
+      <h1><img class="signin-logo" src="https://www.icb.cnr.it/wp-content/uploads/2025/09/LOGO-ICB-STANDARD-web-b.png" alt="ICB CNR"></h1>
+      <p class="sub">Accedi con le credenziali ufficiali ICB<br>o con un account locale</p>
+
+      <form method="post" autocomplete="off">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="text" name="fake_username" autocomplete="username" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+        <input type="password" name="fake_password" autocomplete="current-password" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+        <input type="hidden" name="next" value="{{ next_url }}">
+        <div class="label-row">
+          <label>Email o Username</label>
+          <span class="info-tip" tabindex="0" data-tip="Se non sei sicuro digita il tuo cognome e scegli dai suggerimenti.">i</span>
+        </div>
+        <div class="suggest-wrap">
+          <input id="identifier" name="identifier" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly');" required>
+          <ul id="identifier-suggestions" class="suggest-list"></ul>
+        </div>
+        <label>Password</label>
+        <input name="password" type="password" autocomplete="off" required>
+        <button type="submit">Entra</button>
+      </form>
+
+      <p class="foot">Non hai un account locale? <a href="{{ register_url|default(url_for('auth.register'), true) }}">Registrati</a></p>
+      <div class="site-footer">
+        <div>Consiglio Nazionale delle Ricerche - Isctituto di Chimica Biomolecolare</div>
+        <div>&copy; 2026 - <a href="#" class="js-meta-open">Info</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="meta-modal" id="meta-modal" aria-hidden="true">
+    <div class="meta-modal-box" role="dialog" aria-modal="true" aria-labelledby="meta-title">
+      <button type="button" class="meta-close js-meta-close" aria-label="Chiudi">&times;</button>
+      <h3 id="meta-title">Informazioni</h3>
+      <p><strong>SSO Gateway</strong></p>
+      <p><strong>Descrizione:</strong> Applicazione Flask per autenticare utenti con LDAP esistente (prima scelta) e con file SQL locale (SQLite) come fallback</p>
+      <p><strong>Versione:</strong> 1.0.0</p>
+      <p><strong>Licenza:</strong> Questo programma è software libero ed  è possibile ridistribuirlo e/o modificarlo secondo i termini della GNU General Public License (v3 o successiva).</p>
+      <p><strong>Autori:</strong> Emilio Paolo Castelluccio</p>
+    </div>
+  </div>
+  {% if suggest_enabled %}
+  <script>
+    (function () {
+      const input = document.getElementById("identifier");
+      const list = document.getElementById("identifier-suggestions");
+      const endpoint = "{{ suggest_url }}";
+      const minChars = Number("{{ suggest_min_chars }}") || 3;
+      let suggestions = [];
+      let activeIndex = -1;
+      let timer = null;
+
+      function clearSuggestions() {
+        suggestions = [];
+        activeIndex = -1;
+        list.innerHTML = "";
+        list.classList.remove("show");
+      }
+
+      function renderSuggestions(items) {
+        suggestions = items;
+        activeIndex = -1;
+        list.innerHTML = items.map(function (s, idx) {
+          const safe = String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          return "<li data-idx=\"" + idx + "\">" + safe + "</li>";
+        }).join("");
+        list.classList.toggle("show", items.length > 0);
+      }
+
+      function setActive(idx) {
+        const nodes = list.querySelectorAll("li");
+        nodes.forEach(function (n) { n.classList.remove("active"); });
+        if (idx >= 0 && idx < nodes.length) {
+          nodes[idx].classList.add("active");
+          nodes[idx].scrollIntoView({ block: "nearest" });
+        }
+      }
+
+      async function fetchSuggestions(value) {
+        const url = endpoint + "?q=" + encodeURIComponent(value);
+        const response = await fetch(url, { credentials: "same-origin" });
+        if (!response.ok) {
+          clearSuggestions();
+          return;
+        }
+        const data = await response.json();
+        const items = Array.isArray(data.suggestions) ? data.suggestions : [];
+        renderSuggestions(items);
+      }
+
+      input.addEventListener("input", function () {
+        const value = (input.value || "").trim();
+        if (value.length < minChars) {
+          clearSuggestions();
+          return;
+        }
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+          fetchSuggestions(value).catch(clearSuggestions);
+        }, 180);
+      });
+
+      input.addEventListener("keydown", function (ev) {
+        if (!suggestions.length) {
+          return;
+        }
+        if (ev.key === "ArrowDown") {
+          ev.preventDefault();
+          activeIndex = Math.min(activeIndex + 1, suggestions.length - 1);
+          setActive(activeIndex);
+          return;
+        }
+        if (ev.key === "ArrowUp") {
+          ev.preventDefault();
+          activeIndex = Math.max(activeIndex - 1, 0);
+          setActive(activeIndex);
+          return;
+        }
+        if (ev.key === "Enter" && activeIndex >= 0) {
+          ev.preventDefault();
+          input.value = suggestions[activeIndex];
+          clearSuggestions();
+          return;
+        }
+        if (ev.key === "Escape") {
+          clearSuggestions();
+        }
+      });
+
+      list.addEventListener("mousedown", function (ev) {
+        const item = ev.target.closest("li");
+        if (!item) {
+          return;
+        }
+        ev.preventDefault();
+        const idx = Number(item.getAttribute("data-idx"));
+        if (Number.isInteger(idx) && idx >= 0 && idx < suggestions.length) {
+          input.value = suggestions[idx];
+          clearSuggestions();
+          input.focus();
+        }
+      });
+
+      document.addEventListener("click", function (ev) {
+        if (!list.contains(ev.target) && ev.target !== input) {
+          clearSuggestions();
+        }
+      });
+    })();
+  </script>
+  {% endif %}
+  <script>
+    (function () {
+      const overlay = document.querySelector(".flash-overlay");
+      if (!overlay) return;
+      const dismiss = function (item) {
+        if (!item || !item.parentNode) return;
+        item.style.opacity = "0";
+        setTimeout(function () {
+          if (item.parentNode) item.remove();
+        }, 180);
+      };
+      overlay.querySelectorAll(".flash-item").forEach(function (item, idx) {
+        const closeBtn = item.querySelector(".flash-close");
+        if (closeBtn) {
+          closeBtn.addEventListener("click", function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            dismiss(item);
+          });
+        }
+        setTimeout(function () { dismiss(item); }, 15000 + idx * 350);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const modal = document.getElementById("meta-modal");
+      if (!modal) return;
+      const openBtn = document.querySelector(".js-meta-open");
+      const closeBtn = modal.querySelector(".js-meta-close");
+      const hide = function () {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+      };
+      if (openBtn) {
+        openBtn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          modal.classList.add("show");
+          modal.setAttribute("aria-hidden", "false");
+        });
+      }
+      if (closeBtn) closeBtn.addEventListener("click", hide);
+      modal.addEventListener("click", function (ev) {
+        if (ev.target === modal) hide();
+      });
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape" && modal.classList.contains("show")) hide();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Utenti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef2f6;
+      --panel: #ffffff;
+      --text: #203040;
+      --muted: #5f7388;
+      --primary: #005ea8;
+      --primary-hover: #004d88;
+      --border: #d3dde8;
+      --danger: #b00020;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Source Sans 3", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 550px at 50% -180px, #d5e3f2 0%, transparent 70%),
+        var(--bg);
+      min-height: 100vh;
+      min-width: 900px;
+      padding: 24px;
+    }
+    .wrap { width: 100%; max-width: 1080px; margin: 0 auto; }
+    .brand { text-align: center; margin-bottom: 12px; }
+    .brand img {
+      width: min(100%, 240px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    .admin-header {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 14px 36px rgba(23, 42, 69, 0.12);
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .admin-nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 14px 36px rgba(23, 42, 69, 0.12);
+      padding: 24px;
+    }
+    .section-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      padding: 14px;
+      margin: 0 0 16px;
+    }
+    .section-box:last-of-type { margin-bottom: 0; }
+    .section-box h2 { margin-top: 0; }
+    h1 {
+      margin: 0 0 16px;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+    .nav-btn { text-decoration: none; }
+    .nav-btn.active { background: #21425f; }
+    h2 {
+      margin: 16px 0 8px;
+      font-size: 22px;
+      line-height: 1.2;
+      color: #21425f;
+    }
+    .table-wrap {
+      width: 100%;
+      overflow-x: visible;
+      margin: 8px 0 22px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 0;
+      table-layout: fixed;
+    }
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 15px;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    th {
+      background: #f4f8fc;
+      color: #21425f;
+      font-weight: 700;
+    }
+    tr:last-child td { border-bottom: 0; }
+    form { margin: 0; }
+    .note-form { display: block; margin: 0; }
+    .create-form {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1.4fr auto;
+      gap: 8px;
+      margin: 0 0 14px;
+      align-items: start;
+    }
+    .create-form input,
+    .create-form textarea {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 8px;
+      font: inherit;
+    }
+    .create-form textarea { min-height: 36px; resize: vertical; }
+    .note-input {
+      min-width: 0;
+      width: 100%;
+      max-width: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font: inherit;
+      resize: vertical;
+      min-height: 34px;
+    }
+    .col-id { width: 56px; }
+    .col-active { width: 74px; }
+    .col-note { width: 34%; }
+    .col-actions { width: 152px; min-width: 152px; max-width: 152px; }
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      min-height: 34px;
+      min-width: 92px;
+      padding: 7px 11px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--primary-hover); }
+    .icon-btn {
+      width: 34px;
+      min-width: 34px;
+      padding: 6px;
+    }
+    .icon-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .actions form { margin: 0; }
+    .flash-overlay {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      width: min(92vw, 720px);
+      pointer-events: none;
+    }
+    .flash-item {
+      background: #9d1128;
+      color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 10px 24px rgba(16, 21, 28, 0.28);
+      padding: 10px 38px 10px 12px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 600;
+      transition: opacity .18s ease;
+      position: relative;
+      pointer-events: auto;
+    }
+    .flash-close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 4px;
+      width: auto;
+      margin: 0;
+    }
+    .muted { color: var(--muted); }
+    .site-footer {
+      margin-top: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .site-footer a {
+      color: var(--primary);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .meta-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 33, 51, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1200;
+      padding: 16px;
+    }
+    .meta-modal.show { display: flex; }
+    .meta-modal-box {
+      width: min(100%, 460px);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 14px 36px rgba(23, 42, 69, 0.22);
+      position: relative;
+    }
+    .meta-modal-box h3 {
+      margin: 0 0 8px;
+      color: #21425f;
+      font-size: 19px;
+    }
+    .meta-modal-box p {
+      margin: 0 0 6px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .meta-close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      border: 0;
+      background: transparent;
+      color: #21425f;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 4px;
+      width: auto;
+      margin: 0;
+    }
+    @media (max-width: 760px) {
+      .card { padding: 16px; }
+      th, td { font-size: 14px; padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-overlay">
+        {% for msg in messages %}
+          <div class="flash-item">{{ msg }}<button class="flash-close" type="button" aria-label="Chiudi">&times;</button></div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="wrap">
+    <div class="brand">
+      <img src="https://www.icb.cnr.it/wp-content/uploads/2025/09/LOGO-ICB-STANDARD-web-b.png" alt="ICB CNR">
+    </div>
+    <div class="admin-header">
+      <nav class="admin-nav" aria-label="Menu amministrazione">
+        <a class="btn nav-btn active" href="{{ admin_action_base }}">Utenti</a>
+        <a class="btn nav-btn" href="{{ backup_admin_url }}">Restore</a>
+      </nav>
+      <form method="post" action="{{ logout_url }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn nav-btn" type="submit">Logout</button>
+      </form>
+    </div>
+    <div class="card">
+      <h1>Gestione Utenze Locali</h1>
+
+      <section class="section-box">
+        <h2>Aggiungi utente</h2>
+      <form class="create-form" method="post" action="{{ admin_action_base }}/create" autocomplete="off">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="text" name="fake_username" autocomplete="username" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;">
+        <input type="password" name="fake_password" autocomplete="new-password" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;">
+        <input type="email" name="email" placeholder="Email utente" required autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <input type="password" name="password" placeholder="Password (min 8, numero, simbolo)" required autocomplete="new-password">
+        <textarea name="note" placeholder="Nota (opzionale)" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+        <button class="btn icon-btn" type="submit" title="Aggiungi utente" aria-label="Aggiungi utente">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          <span class="sr-only">Aggiungi</span>
+        </button>
+      </form>
+      </section>
+
+      <section class="section-box">
+      <h2>Registrazioni in attesa</h2>
+      <div class="table-wrap">
+      <table>
+    <thead>
+      <tr><th class="col-id">ID</th><th>Username/Email</th><th class="col-active">Conf.</th><th class="col-note">Note</th><th class="col-actions">Azioni</th></tr>
+    </thead>
+    <tbody>
+      {% for u in pending_users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ "Si" if u.email_confirmed else "No" }}</td>
+        <td class="col-note">
+          <form id="note-form-{{ u.id }}" class="note-form" method="post" action="{{ admin_action_base }}/{{ u.id }}/note" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <textarea class="note-input" name="note" placeholder="Note amministrative" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">{{ u.note or '' }}</textarea>
+          </form>
+        </td>
+        <td class="col-actions">
+          <div class="actions">
+            <button class="btn icon-btn" type="submit" form="note-form-{{ u.id }}" title="Salva nota" aria-label="Salva nota">
+              <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+              <span class="sr-only">Salva</span>
+            </button>
+            <form method="post" action="{{ admin_action_base }}/{{ u.id }}/approve">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn icon-btn" type="submit" title="Approva utente" aria-label="Approva utente">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-5"/></svg>
+                <span class="sr-only">Approva</span>
+              </button>
+            </form>
+            <form class="js-confirm-delete" data-user-email="{{ u.email }}" method="post" action="{{ admin_action_base }}/{{ u.id }}/delete">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn icon-btn" type="submit" title="Elimina utente" aria-label="Elimina utente">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M7 6l1 14h8l1-14"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                <span class="sr-only">Elimina</span>
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5">Nessun utente in attesa.</td></tr>
+      {% endfor %}
+    </tbody>
+      </table>
+      </div>
+      </section>
+
+      <section class="section-box">
+      <h2>Tutti gli utenti locali</h2>
+      <div class="table-wrap">
+      <table>
+    <thead>
+      <tr><th class="col-id">ID</th><th>Username/Email</th><th class="col-active">Attivo</th><th class="col-note">Note</th><th class="col-actions">Azioni</th></tr>
+    </thead>
+    <tbody>
+      {% for u in local_users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ "Si" if u.active else "No" }}</td>
+        <td class="col-note">
+          <form id="note-form-{{ u.id }}" class="note-form" method="post" action="{{ admin_action_base }}/{{ u.id }}/note" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <textarea class="note-input" name="note" placeholder="Note amministrative" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">{{ u.note or '' }}</textarea>
+          </form>
+        </td>
+        <td class="col-actions">
+          {% if not u.is_admin %}
+          <div class="actions">
+            <button class="btn icon-btn" type="submit" form="note-form-{{ u.id }}" title="Salva nota" aria-label="Salva nota">
+              <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+              <span class="sr-only">Salva</span>
+            </button>
+            {% if u.active %}
+            <form method="post" action="{{ admin_action_base }}/{{ u.id }}/disable">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn icon-btn" type="submit" title="Disabilita utente" aria-label="Disabilita utente">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>
+                <span class="sr-only">Disabilita</span>
+              </button>
+            </form>
+            {% else %}
+            <form method="post" action="{{ admin_action_base }}/{{ u.id }}/enable">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn icon-btn" type="submit" title="Riabilita utente" aria-label="Riabilita utente">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+                <span class="sr-only">Riabilita</span>
+              </button>
+            </form>
+            {% endif %}
+            <form class="js-confirm-delete" data-user-email="{{ u.email }}" method="post" action="{{ admin_action_base }}/{{ u.id }}/delete">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn icon-btn" type="submit" title="Elimina utente" aria-label="Elimina utente">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M7 6l1 14h8l1-14"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                <span class="sr-only">Elimina</span>
+              </button>
+            </form>
+          </div>
+          {% else %}
+          -
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+      </table>
+      </div>
+      </section>
+      <p class="muted">Le azioni sono applicate solo a utenze locali.</p>
+      <div class="site-footer">
+        <div>Consiglio Nazionale delle Ricerche - Isctituto di Chimica Biomolecolare</div>
+        <div>&copy; 2026 - <a href="#" class="js-meta-open">Info</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="meta-modal" id="meta-modal" aria-hidden="true">
+    <div class="meta-modal-box" role="dialog" aria-modal="true" aria-labelledby="meta-title">
+      <button type="button" class="meta-close js-meta-close" aria-label="Chiudi">&times;</button>
+      <h3 id="meta-title">Informazioni</h3>
+      <p><strong>SSO Gateway</strong></p>
+      <p><strong>Descrizione:</strong> Applicazione Flask per autenticare utenti con LDAP esistente (prima scelta) e con file SQL locale (SQLite) come fallback</p>
+      <p><strong>Versione:</strong> 1.0.0</p>
+      <p><strong>Licenza:</strong> Questo programma è software libero ed  è possibile ridistribuirlo e/o modificarlo secondo i termini della GNU General Public License (v3 o successiva).</p>
+      <p><strong>Autori:</strong> Emilio Paolo Castelluccio</p>
+    </div>
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll(".js-confirm-delete").forEach(function (form) {
+        form.addEventListener("submit", function (ev) {
+          const email = form.getAttribute("data-user-email") || "questo utente";
+          if (!window.confirm("Confermi l'eliminazione dell'utente " + email + "?")) {
+            ev.preventDefault();
+          }
+        });
+      });
+
+      const overlay = document.querySelector(".flash-overlay");
+      if (!overlay) return;
+      const dismiss = function (item) {
+        if (!item || !item.parentNode) return;
+        item.style.opacity = "0";
+        setTimeout(function () {
+          if (item.parentNode) item.remove();
+        }, 180);
+      };
+      overlay.querySelectorAll(".flash-item").forEach(function (item, idx) {
+        const closeBtn = item.querySelector(".flash-close");
+        if (closeBtn) {
+          closeBtn.addEventListener("click", function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            dismiss(item);
+          });
+        }
+        setTimeout(function () { dismiss(item); }, 15000 + idx * 350);
+      });
+
+    })();
+  </script>
+  <script>
+    (function () {
+      const modal = document.getElementById("meta-modal");
+      if (!modal) return;
+      const openBtn = document.querySelector(".js-meta-open");
+      const closeBtn = modal.querySelector(".js-meta-close");
+      const hide = function () {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+      };
+      if (openBtn) {
+        openBtn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          modal.classList.add("show");
+          modal.setAttribute("aria-hidden", "false");
+        });
+      }
+      if (closeBtn) closeBtn.addEventListener("click", hide);
+      modal.addEventListener("click", function (ev) {
+        if (ev.target === modal) hide();
+      });
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape" && modal.classList.contains("show")) hide();
+      });
+    })();
+  </script>
+</body>
+</html>
