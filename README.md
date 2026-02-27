@@ -5,7 +5,7 @@ Applicazione Flask per autenticare utenti con:
 - RADIUS / eduroam (EAP-MSCHAPv2)
 - file SQL locale (SQLite) come fallback
 
-Con auto-registrazione locale consentita **solo** a email `@cnr.it`.
+Con auto-registrazione locale consentita ai domini configurati (`REGISTER_ALLOWED_DOMAINS`, default `cnr.it`), oppure a **qualsiasi dominio** con `REGISTER_ALLOW_ANY_DOMAIN=true`.
 
 Puoi usarla come "gateway auth" davanti a pagine WordPress servite da `nginx + apache`.
 
@@ -49,7 +49,7 @@ Endpoint utili:
 1. Login: prima tenta LDAP.
 2. Se LDAP fallisce, tenta RADIUS / eduroam (se abilitato).
 3. Se anche RADIUS fallisce, tenta utente locale SQLite.
-4. Registrazione locale: ammessa solo con email `@cnr.it`.
+4. Registrazione locale: ammessa solo con email dei domini configurati in `REGISTER_ALLOWED_DOMAINS` (oppure qualunque dominio se `REGISTER_ALLOW_ANY_DOMAIN=true`).
 4. Per utenti locali, l'email diventa anche username.
 5. La password locale deve avere almeno 8 caratteri con almeno un numero e un carattere speciale.
 6. Nuovi utenti locali ricevono email con link di conferma.
@@ -179,6 +179,7 @@ MAIL_USERNAME=utente_smtp
 MAIL_PASSWORD=password_smtp
 MAIL_FROM=no-reply@example.org
 ADMIN_NOTIFY_EMAIL=admin@example.org
+LOGO_URL=https://example.org/path/logo.png
 APP_BASE_URL=https://tuo-dominio.it
 PUBLIC_LOGIN_PATH=/sso-login
 PUBLIC_REGISTER_PATH=/sso-register
@@ -186,7 +187,6 @@ PUBLIC_ADMIN_USERS_PATH=/sso
 PUBLIC_CONFIRM_EMAIL_PREFIX=/sso-confirm-email
 PUBLIC_SUGGEST_PATH=/sso-suggest-users
 PUBLIC_LOGOUT_PATH=/sso-logout
-PUBLIC_ADMIN_HBA_SSO_PATH=/sso-admin-hba-sso
 LOGIN_SUGGEST_ENABLED=true
 LOGIN_SUGGEST_MIN_CHARS=3
 LOGIN_SUGGEST_RATE_LIMIT_PER_MIN=120

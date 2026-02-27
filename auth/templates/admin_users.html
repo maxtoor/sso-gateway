@@ -309,12 +309,11 @@
 
   <div class="wrap">
     <div class="brand">
-      <img src="https://www.icb.cnr.it/wp-content/uploads/2025/09/LOGO-ICB-STANDARD-web-b.png" alt="ICB CNR">
+      {% if logo_url %}<img src="{{ logo_url }}" alt="Logo">{% else %}<h1>SSO Gateway</h1>{% endif %}
     </div>
     <div class="admin-header">
       <nav class="admin-nav" aria-label="Menu amministrazione">
         <a class="btn nav-btn active" href="{{ admin_action_base }}">Utenti</a>
-        <a class="btn nav-btn" href="{{ backup_admin_url }}">Restore</a>
       </nav>
       <form method="post" action="{{ logout_url }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

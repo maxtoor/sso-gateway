@@ -294,7 +294,7 @@
 
   <div class="login-wrap">
     <div class="card">
-      <h1><img class="signin-logo" src="https://www.icb.cnr.it/wp-content/uploads/2025/09/LOGO-ICB-STANDARD-web-b.png" alt="ICB CNR"></h1>
+      <h1>{% if logo_url %}<img class="signin-logo" src="{{ logo_url }}" alt="Logo">{% else %}SSO Gateway{% endif %}</h1>
       <p class="sub">Accedi con le credenziali ufficiali ICB<br>o con un account locale</p>
 
       <form method="post" autocomplete="off">

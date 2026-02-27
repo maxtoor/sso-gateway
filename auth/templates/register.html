@@ -267,14 +267,14 @@
 
   <div class="wrap">
     <div class="card">
-      <h1><img class="signin-logo" src="https://www.icb.cnr.it/wp-content/uploads/2025/09/LOGO-ICB-STANDARD-web-b.png" alt="ICB CNR"></h1>
+      <h1>{% if logo_url %}<img class="signin-logo" src="{{ logo_url }}" alt="Logo">{% else %}SSO Gateway{% endif %}</h1>
       <p class="sub">Nuova registrazione.</p>
 
       <form method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="label-row">
           <label>Email</label>
-          <span class="info-tip" tabindex="0" data-tip="Solo email istituzionale @cnr.it">i</span>
+          <span class="info-tip" tabindex="0" data-tip="Solo email del dominio consentito dall'amministratore">i</span>
         </div>
         <input name="email" type="email" autocomplete="email" required>
         <div class="label-row">

@@ -41,8 +41,24 @@ def _safe_next_url() -> str:
     return "/"
 
 
-def _is_cnr_email(email: str) -> bool:
-    return email.lower().endswith("@cnr.it")
+def _allowed_registration_domains() -> list[str]:
+    raw = current_app.config.get("REGISTER_ALLOWED_DOMAINS", "cnr.it")
+    domains = []
+    for item in str(raw).split(","):
+        domain = item.strip().lower().lstrip("@")
+        if domain:
+            domains.append(domain)
+    return domains
+
+
+def _is_allowed_registration_email(email: str) -> bool:
+    if current_app.config.get("REGISTER_ALLOW_ANY_DOMAIN", False):
+        return True
+    domains = _allowed_registration_domains()
+    if not domains:
+        return False
+    email_lower = email.lower()
+    return any(email_lower.endswith(f"@{domain}") for domain in domains)
 
 
 def _validate_strong_password(password: str) -> tuple[bool, str]:
@@ -81,17 +97,8 @@ def _public_admin_users_url() -> str:
     return current_app.config.get("PUBLIC_ADMIN_USERS_PATH", "/auth/admin/users")
 
 
-def _public_admin_hba_sso_url() -> str:
-    return current_app.config.get("PUBLIC_ADMIN_HBA_SSO_PATH", "/auth/admin/hba-sso")
-
-
 def _public_suggest_url() -> str:
     return current_app.config.get("PUBLIC_SUGGEST_PATH", "/auth/suggest-users")
-
-
-def _hba_sso_serializer() -> URLSafeTimedSerializer:
-    secret = current_app.config.get("HBA_SSO_SECRET") or current_app.config["SECRET_KEY"]
-    return URLSafeTimedSerializer(secret)
 
 
 def _ldap_lookup_and_bind(username: str, password: str):
@@ -539,8 +546,13 @@ def register():
             flash("Compila tutti i campi.")
             return render_template("register.html", login_url=_public_login_url())
 
-        if not _is_cnr_email(email):
-            flash("Registrazione consentita solo con email @cnr.it.")
+        if not _is_allowed_registration_email(email):
+            domains = _allowed_registration_domains()
+            if domains:
+                domain_label = ", ".join(f"@{d}" for d in domains)
+                flash(f"Registrazione consentita solo con email: {domain_label}.")
+            else:
+                flash("Registrazione non disponibile: nessun dominio consentito configurato.")
             return render_template("register.html", login_url=_public_login_url())
 
         is_ok, reason = _validate_strong_password(password)
@@ -654,30 +666,8 @@ def admin_users():
         pending_users=pending_users,
         local_users=local_users,
         admin_action_base=_public_admin_users_url().rstrip("/"),
-        backup_admin_url=_public_admin_hba_sso_url(),
         logout_url=current_app.config.get("PUBLIC_LOGOUT_PATH", "/auth/logout"),
     )
-
-
-@auth_bp.route("/admin/hba-sso", methods=["GET"])
-def admin_hba_sso():
-    guard = _admin_required()
-    if guard:
-        return guard
-
-    if not current_app.config.get("HBA_SSO_ENABLED", True):
-        flash("Accesso SSO a Backup/Restore disabilitato.")
-        return redirect(_public_admin_users_url())
-
-    payload = {
-        "is_admin": True,
-        "email": current_user.email,
-        "username": current_user.username,
-    }
-    token = _hba_sso_serializer().dumps(payload)
-    hba_sso_url = current_app.config.get("HBA_SSO_URL", "/hba/sso-login")
-    separator = "&" if "?" in hba_sso_url else "?"
-    return redirect(f"{hba_sso_url}{separator}token={quote(token)}")
 
 
 @auth_bp.route("/admin/users/create", methods=["POST"])

@@ -36,6 +36,11 @@ class Config:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "")
     MAIL_FROM = os.getenv("MAIL_FROM", "no-reply@example.org")
     ADMIN_NOTIFY_EMAIL = os.getenv("ADMIN_NOTIFY_EMAIL", "")
+    LOGO_URL = os.getenv("LOGO_URL", "").strip()
+    REGISTER_ALLOW_ANY_DOMAIN = env_bool("REGISTER_ALLOW_ANY_DOMAIN", False)
+    REGISTER_ALLOWED_DOMAINS = os.getenv(
+        "REGISTER_ALLOWED_DOMAINS", os.getenv("REGISTER_ALLOWED_DOMAIN", "cnr.it")
+    )
 
     APP_BASE_URL = os.getenv("APP_BASE_URL", "")
     PUBLIC_LOGIN_PATH = os.getenv("PUBLIC_LOGIN_PATH", "/auth/login")
@@ -46,14 +51,6 @@ class Config:
         "PUBLIC_CONFIRM_EMAIL_PREFIX", "/auth/confirm-email"
     )
     PUBLIC_SUGGEST_PATH = os.getenv("PUBLIC_SUGGEST_PATH", "/auth/suggest-users")
-    PUBLIC_ADMIN_HBA_SSO_PATH = os.getenv(
-        "PUBLIC_ADMIN_HBA_SSO_PATH", "/auth/admin/hba-sso"
-    )
-    HBA_PUBLIC_PATH = os.getenv("HBA_PUBLIC_PATH", "/hba")
-    HBA_SSO_ENABLED = env_bool("HBA_SSO_ENABLED", True)
-    HBA_SSO_URL = os.getenv("HBA_SSO_URL", "/hba/sso-login")
-    HBA_SSO_SECRET = os.getenv("HBA_SSO_SECRET", "")
-    HBA_SSO_MAX_AGE_SECONDS = int(os.getenv("HBA_SSO_MAX_AGE_SECONDS", "120"))
     LOGIN_SUGGEST_ENABLED = env_bool("LOGIN_SUGGEST_ENABLED", False)
     LOGIN_SUGGEST_MIN_CHARS = int(os.getenv("LOGIN_SUGGEST_MIN_CHARS", "3"))
     LOGIN_SUGGEST_RATE_LIMIT_PER_MIN = int(

@@ -41,6 +41,10 @@ def create_app() -> Flask:
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
 
+    @app.context_processor
+    def inject_branding():
+        return {"logo_url": app.config.get("LOGO_URL", "")}
+
     def _ensure_schema():
         inspector = inspect(db.engine)
         if "user" not in inspector.get_table_names():
