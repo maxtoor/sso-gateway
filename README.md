@@ -5,7 +5,7 @@ Applicazione Flask per autenticare utenti con:
 - RADIUS / eduroam (EAP-MSCHAPv2)
 - file SQL locale (SQLite) come fallback
 
-Con auto-registrazione locale consentita ai domini configurati (`REGISTER_ALLOWED_DOMAINS`, default `cnr.it`), oppure a **qualsiasi dominio** con `REGISTER_ALLOW_ANY_DOMAIN=true`.
+Con auto-registrazione locale consentita ai domini configurati (`REGISTER_ALLOWED_DOMAINS`), oppure a **qualsiasi dominio** con `REGISTER_ALLOW_ANY_DOMAIN=true`.
 
 Puoi usarla come "gateway auth" davanti a pagine WordPress servite da `nginx + apache`.
 
